@@ -12,13 +12,8 @@ int ex4(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[], char* envp[]){
-    int i = 0;
     
-    while(envp[i] != NULL){
-        if (!strncmp("USER=", envp[i], 5))
-            printf("Hello %s \n",envp[i]);
-        i++;
-    }
+    printf("Hello %s \n", getenv("USER_NAME"));
 
     return 0;
 }
