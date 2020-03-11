@@ -1,0 +1,16 @@
+../TP2:
+total 64
+drwxrwxrwx 1 xavier xavier 4096 Mar 10 23:32 .
+drwxrwxrwx 1 xavier xavier 4096 Mar  7 19:54 ..
+-rw-rw-rw- 1 xavier xavier  809 Mar  7 19:54 ex1.c
+-rw-rw-rw- 1 xavier xavier 1254 Mar  7 19:54 ex2.c
+-rwxrwxrwx 1 xavier xavier 8568 Mar  7 19:54 ex4
+-rw-rw-rw- 1 xavier xavier 1275 Mar  7 19:54 ex4.c
+-rwxrwxrwx 1 xavier xavier 8384 Mar 10 22:21 ex5a
+-rw-rw-rw- 1 xavier xavier  329 Mar 10 22:21 ex5a.c
+-rwxrwxrwx 1 xavier xavier 8384 Mar 10 22:56 ex5b
+-rw-rw-rw- 1 xavier xavier  307 Mar 10 22:56 ex5b.c
+-rwxrwxrwx 1 xavier xavier 8696 Mar 10 23:32 ex6
+-rw-rw-rw- 1 xavier xavier  904 Mar 10 23:32 ex6.c
+-rw------- 1 xavier xavier   10 Mar 10 22:56 f1.txt
+-rw-rw-rw- 1 xavier xavier    5 Mar  7 19:54 file1.txt

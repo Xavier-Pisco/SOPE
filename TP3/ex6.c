@@ -5,12 +5,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
 
 int main(void) {  
     pid_t pid;
+    struct rlimit limit;
     int i;
     printf("I'm process %d. My parent is %d.\n", getpid(),getppid());  
     for (i=1; i<=3; i++) {
@@ -25,8 +28,13 @@ int main(void) {
             exit(0);  // a eliminar na alinea c)        
             }        
         else{            // simulando o trabalho do pai                   
-            wait(NULL);
+            while (waitpid(0, NULL, WNOHANG) == 0){
+                sleep(0.5);
+            }
         }
     }
-    exit(0); 
+    getrlimit(RLIMIT_NPROC, &limit);
+    printf("%lu\n", limit.rlim_cur);
+    printf("%lu\n", limit.rlim_max);
+    exit(0);
 }
