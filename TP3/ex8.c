@@ -13,8 +13,8 @@ int main(int argc, char *argv[], char *envp[])
     if (pid > 0)
         printf("My child is going to execute command \"ls -laR %s\"\n", argv[1]);
     else if (pid == 0){
-        char* argv[] = {"ls", "-laR", argv[1], NULL};
-        execve("/bin/ls", argv, envp);
+        char *arg[] = {"ls", "-laR", argv[1], NULL};
+        execve("/bin/ls", arg, envp);
         printf("Command not executed !\n");
         exit(1);
     }
