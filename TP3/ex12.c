@@ -1,6 +1,5 @@
 #include "termios.h"
 #include "unistd.h"
-#include "stdio.h"
 #include "errno.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -11,7 +10,6 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
-#include <string.h>
 #include <dirent.h>
 #include <unistd.h>
 
@@ -36,19 +34,25 @@ int copy_directory(char *d1, char *d2){
     struct stat stat_buf;
     pid_t pid;
     struct dirent *direntp1, *direntp2;
+    char *current = ".", *previous = "..";
     
     if ((dir1 = opendir( d1)) == NULL)
     {
         perror(d1);
         exit(2);
     }
+    if (stat(d2, &stat_buf) == -1){
+        mkdir(d2, 0744);
+    }
     if ((dir2 = opendir(d2)) == NULL)
     {
-        printf("This error\n");
+        perror(d2);
         exit(2);
     }
-    while ((direntp1 = readdir( dir1)) != NULL)
+    while ((direntp1 = readdir(dir1)) != NULL)
     {
+        direntp2 = readdir(dir2);
+        printf("%s %s\n", d1, d2);
         if (lstat(direntp1->d_name, &stat_buf) != 0) {
             perror(d1);
             exit(3);
@@ -56,26 +60,15 @@ int copy_directory(char *d1, char *d2){
         if (S_ISREG(stat_buf.st_mode)) {
             pid = fork();
             if (pid == 0){
-                if ((direntp2 = readdir(dir2)) == NULL){
-                    perror(d2);
-                    exit(3);
-                }
                 copy_file(direntp1->d_name, direntp2->d_name);
                 exit(0);
             }
         }
         else if (S_ISDIR(stat_buf.st_mode)) {
-            if ((dir1 = opendir(d1)) == NULL)
-            {
-                perror(d1);
-                exit(2);
-            }
-            if ((dir2 = opendir(d2)) == NULL)
-            {
-                perror(d2);
-                exit(2);
-            }
-            copy_directory(d1, d2);
+            if (strcmp(d1,current) || strcmp(d1,previous)) continue;
+            mkdir(d2,0744);
+            direntp2 = readdir(dir2);
+            copy_directory(direntp1->d_name, direntp2->d_name);
         }
     }
     closedir(dir1);
