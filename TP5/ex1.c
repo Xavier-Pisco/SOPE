@@ -4,35 +4,36 @@
 #include <termios.h>
 #include <sys/wait.h>
 
+#define MAX_SIZE 50
+
+struct twoints{
+    char a[MAX_SIZE], b[MAX_SIZE];
+};
+
 int main(){
-    int a[2] = {0,0}, fd[2];
+    int fd[2];
+    struct twoints ints;
 
     pipe(fd);
 
     if (fork() > 0){
         write(STDOUT_FILENO, "Write 2 numbers: ", 17);
-        scanf("%d %d", &a[0], &a[1]);
+        scanf("%s %s", ints.a, ints.b);
         close(fd[0]);
-        write(fd[1], &a[0], 1);
-        write(fd[1], &a[1], 1);
+        write(fd[1], &ints, sizeof(ints));
         close(fd[1]);
         wait(NULL);
     } else {
         close(fd[1]);
-        while(read(fd[0], &a[0], 1) < 1){
-            sleep(1);
-        }
-        while(read(fd[0], &a[1], 1) < 1){
-            sleep(1);
-        }
-        printf("%d %d\n", a[0], a[1]);
-        printf("Soma: %d\n", a[0] + a[1]);
-        printf("Subtração: %d\n", a[0] - a[1]);
-        printf("Multiplicação: %d\n", a[0] * a[1]);
-        if (a[1] == 0){
+        read(fd[0], &ints, sizeof(ints));
+        int a = atoi(ints.a), b = atoi(ints.b);
+        printf("Soma: %d\n", a + b);
+        printf("Subtração: %d\n", a - b);
+        printf("Multiplicação: %d\n", a * b);
+        if (b == 0){
             printf("Não é possivel a divisão\n");
         } else {
-            printf("Divisão: %d\n", a[0]/a[1]);
+            printf("Divisão: %d\n", a/b);
         }
         close(fd[0]);
     }
