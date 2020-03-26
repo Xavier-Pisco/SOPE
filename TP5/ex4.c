@@ -5,37 +5,45 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int main(int argc, char* argv[]){
-    int fd1[2], fd2[2], tmp_stdin, tmp_stdout;
+int main(int argc, char* argv[], char* envp[]){
+    int fd1[2], fd2[2];
 
     if (argc != 3){
-        printf("Usage: %s directory string", argv[0]);
+        printf("Usage: %s directory string\n", argv[0]);
         exit(1);
     }
 
-    pipe(fd1);
-    pipe(fd2);
-
-    tmp_stdin = dup(STDIN_FILENO);
-    tmp_stdout = dup(STDOUT_FILENO);
+    if (pipe(fd1) != 0){
+        printf("Error creating pipe\n");
+        exit(2);
+    }
+    if (pipe(fd2) != 0){
+        printf("Error creating pipe\n");
+        exit(2);
+    }
+    
 
     if (fork() > 0){
         if (fork() > 0){
+            close(fd2[0]);
+            close(fd2[1]);
+            close(fd1[0]);
             dup2(fd1[1], STDOUT_FILENO);
-            execlp("ls", "ls" , argv[1], NULL);
-            exit(1);
+            execlp("ls", "ls", argv[1], "-laR", NULL);
         } else {
-            dup2(fd2[1], STDIN_FILENO);
-            dup2(fd1[0], STDOUT_FILENO);
-            execlp("grep", "grep" , argv[2], fd1[0], NULL);
-            exit(1);
+            close(fd1[1]);
+            close(fd2[0]);
+            dup2(fd1[0], STDIN_FILENO);
+            dup2(fd2[1], STDOUT_FILENO);
+            execlp("grep", "grep", argv[2], NULL);
         }
     } else {
-        dup2(STDOUT_FILENO, tmp_stdout);
+        close(fd2[1]);
+        close(fd1[0]);
+        close(fd1[1]);
         dup2(fd2[0], STDIN_FILENO);
-        execlp("sort", "sort" , fd2[0], NULL);
-        exit(1);
+        execlp("sort", "sort", NULL);
     }
 
-    exit(0);
+    exit(3);
 }
