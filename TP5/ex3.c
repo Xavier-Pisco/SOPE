@@ -9,7 +9,7 @@
 
 int main(int argc, char* argv[]){
     
-    int fd[2], f, temp;
+    int fd[2];
 
     if (argc != 2){
         printf("Usage %s file", argv[0]);
@@ -18,20 +18,15 @@ int main(int argc, char* argv[]){
 
     pipe(fd);
 
-    if ((f = open(argv[1], O_RDONLY, NULL)) == -1){
-        perror(argv[1]);
-        exit(2);
-    }
-
-    temp = dup(STDOUT_FILENO);
-    dup2(STDIN_FILENO, fd[1]);
-
     if (fork() > 0) {
+        close(fd[0]);
+        dup2(fd[1], STDOUT_FILENO);
         execlp("cat", "cat", argv[1], NULL);
     } else {
-        execlp("sort", "sort", fd[0], NULL);
+        close(fd[1]);
+        dup2(fd[0], STDIN_FILENO);
+        execlp("sort", "sort", NULL);
     }
 
-    dup2(temp, STDOUT_FILENO);
     exit(0);
 }
