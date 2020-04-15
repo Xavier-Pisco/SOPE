@@ -7,7 +7,7 @@
 
 void * threadFunc(void * threadnum){
     sleep(1);
-    printf("Thread %d\n", *(int *) threadnum);
+    printf("Thread %lu\n", pthread_self());
     return threadnum;
 }
 
