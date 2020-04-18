@@ -24,7 +24,8 @@ int main(){
     }
 
     while(true) {
-        while (read(fd1, fifo_name, MAX_STRING_SIZE) <= 0) sleep(1);
+        int nread;
+        while ((nread = read(fd1, fifo_name, MAX_STRING_SIZE)) <= 0) sleep(1);
         if ((fd2 = open(fifo_name, O_WRONLY)) == -1) return 1;
         read(fd1, &a[0], 1);
         read(fd1, &a[1], 1);

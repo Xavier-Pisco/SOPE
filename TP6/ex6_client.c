@@ -29,6 +29,7 @@ int main(){
         write(STDOUT_FILENO, "Write 2 numbers (0, 0 to leave): ", 33);
         scanf("%d %d", &a[0], &a[1]);
         write(fd1, fifo_name, strlen(fifo_name) + 1);
+        sleep(1);
         write(fd1, &a[0], 1);
         write(fd1, &a[1], 1);
         fd2 = open(fifo_name, O_RDONLY);
