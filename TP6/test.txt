@@ -1,0 +1,6 @@
+a file
+with text
+and more text
+until file the end
+of the file
+
